@@ -1,0 +1,134 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+<style>
+	body,html{
+			height: 100%;
+			margin: 0;
+			background: #7F7FD5;
+	       background: -webkit-linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5);
+	        background: linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5);
+		}
+	.message_holder{
+		margin-top: auto;
+		margin-bottom: auto;
+		margin-left: 10px;
+		border-radius: 25px;
+		color: #ffffff;
+		background-color: #82ccdd;
+		padding: 10px;
+		position: relative;
+	}
+	.message{
+		margin-top: auto;
+		margin-bottom: auto;
+		margin-right: 10px;
+		border-radius: 25px;
+		background-color: #78e08f;
+		padding: 10px;
+		position: relative;
+	}
+	.username{
+		margin-left: 10px;
+		margin-top: auto;
+		margin-bottom: auto;
+		margin-right: 10px;
+		border-radius: 25px;
+		background-color: #78e08f;
+		padding: 10px;
+		position: relative;
+	}
+</style>
+</head>
+<body>
+<script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+
+if (annyang) {
+  // Let's define our first command. First the text we expect, and then the function it should call
+  var hello = function() {
+      alert("Hello! I am an alert box!");
+  };
+
+  var problem = function(tag) {
+      alert("Hello! I am an alert box!");
+      document.getElementById("message").value = tag;
+  };
+
+  var commands = {
+      'проблема *tag': problem,
+      'hello':        hello
+  };
+
+  // Add our commands to annyang
+  annyang.setLanguage('ru');
+
+  annyang.addCommands(commands);
+  annyang.addCallback('result', function(phrases) {
+    console.log("I think the user said: ", phrases[0]);
+    console.log("But then again, it could be any of the following: ", phrases);
+  });
+annyang.addCallback('soundstart', function() {
+  console.log('sound detected');
+});
+annyang.addCallback('resultMatch', function(userSaid, commandText, phrases) {
+  console.log(userSaid); // sample output: 'hello'
+  console.log(commandText); // sample output: 'hello (there)'
+  console.log(phrases); // sample output: ['hello', 'halo', 'yellow', 'polo', 'hello kitty']
+});
+
+annyang.addCallback('resultNoMatch', function(phrases) {
+  console.log("I think the user said: ", phrases[0]);
+  console.log("But then again, it could be any of the following: ", phrases);
+});
+
+  // Start listening. You can call this here, or attach this call to an event, button, etc.
+  console.log('Starting...');
+  annyang.debug();
+  annyang.start();
+}
+</script>
+    <h3 style='color: #fff;font-size: 30px;'>No message yet..</h3>
+    <div class="message_holder"></div>
+<form action="" method="POST">
+      <input id='username' type="text" class="username" placeholder="User Name"/>
+      <input id='message' type="text" class="message" placeholder="Messages"/>
+      <input type="submit" value='Послать'/>
+</form>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script type="text/javascript">
+      var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+      socket.on( 'connect', function() {
+        socket.emit( 'my event', {
+          data: 'User Connected'
+        } )
+        var form = $( 'form' ).on( 'submit', function( e ) {
+          e.preventDefault()
+          let user_name = $( 'input.username' ).val()
+          let user_input = $( 'input.message' ).val()
+          alert(user_input)
+          socket.emit( 'my event', {
+            user_name : user_name,
+            message : user_input
+          } )
+          $( 'input.message' ).val( '' ).focus()
+        } )
+      } )
+      socket.on( 'my response', function( msg ) {
+        console.log( msg )
+        if( typeof msg.user_name !== 'undefined' ) {
+          $( 'h3' ).remove()
+          $( 'div.message_holder' ).append( '<div><b style="color: #000">'+msg.user_name+'</b> '+msg.message+'</div>' )
+        }
+      })
+
+      document.getElementById("username").value = "Пользователь1";
+    </script>
+
+
+</body>
+</html>
