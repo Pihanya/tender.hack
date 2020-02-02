@@ -46,10 +46,18 @@ def get_simple_answer(message):
 @socketio.on('my event')
 def handle_my_custom_event(json, methods=['GET', 'POST']):
     print('received my event: '+ str(json))
+    json['chanse'] = -1
+    socketio.emit('my response', json, callback=messageReceived)
+    
+    answer, request, tokens, metric = get_simple_answer(json['message'])
+    json['answer'] =  answer
+    json['keywords'] = tokens
+    json['username'] = 'bot'
+    json['metric'] = metric
     socketio.emit('my response', json, callback=messageReceived)
 
-    json['message'] = get_simple_answer(json['message'])
-    socketio.emit('my response', json, callback=messageReceived)
+    #json['message'] = get_simple_answer(json['message'])
+    #socketio.emit('my response', json, callback=messageReceived)
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', debug=True)
