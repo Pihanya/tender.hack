@@ -168,8 +168,17 @@ def normalize_words(text):
 # In[49]:
 
 
+def memoize2(f):
+    memo = {}
+    def helper(*x):
+        if x not in memo:            
+            memo[x] = f(*x)
+        return memo[x]
+    return helper
+
 # найти хорошие/плохие словосочетания и слова
 # extract_keys( text ): (bad_phrases, good_phrases, bad_words, good_words) - all sets
+@memoize2
 def extract_keys(text):
     bad_phrases, good_phrases = [], []
     bad_words, good_words = [], []
@@ -222,12 +231,21 @@ def metric_value(token):
         return 0
     return len(token.split(' '))   
 
+def memoize(f):
+    memo = {}
+    def helper(*x):
+        if x not in memo:            
+            memo[x] = f(*x)
+        return memo[x]
+    return helper
+    
 # поиск значений различных метрик
 # syn_coeff - минимальное значение похожести слов в word2vec для поиска синонимов
 # find_metric( report_text, question, syn_coeff ): ( metrics, hits )
 # metrics - массив из метрик. порядок метрик такой же как в шапке метода
 # hits - тапл из четырех массивов: найденные совпадения плохих словосочетаний,
 #        хороших словосочетаний, плохих слов, хороших слов
+@memoize
 def find_metric( report_text, question, syn_coeff=0.5 ):
     question = normalize_words(question)
     
@@ -429,6 +447,7 @@ def get_simple_answer(request):
     max_similarity = 0
     found_index = None
     idx = -1
+#    for i in range(len(questions)):
     for i in range(min(150, len(questions))):
         question = questions[i]
         print("NOW", question)
@@ -455,7 +474,7 @@ def get_simple_answer(request):
             
     for token in tokens:
         request = request.replace(token, token.upper())
-    return answers[idx], request, tokens, max_similarity)
+    return answers[idx], request, tokens, max_similarity
             
             
 # actual_question = 'В нашей заявке 2886444-19 мы ждем номер заявки на СТЕ. Как скоро обычно такие заявки рассматриваются?'

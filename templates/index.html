@@ -103,9 +103,6 @@ annyang.addCallback('resultNoMatch', function(phrases) {
       var socket = io.connect('http://' + document.domain + ':' + location.port);
 
       socket.on( 'connect', function() {
-        socket.emit( 'my event', {
-          data: 'User Connected'
-        } )
         var form = $( 'form' ).on( 'submit', function( e ) {
           e.preventDefault()
           let user_name = $( 'input.username' ).val()
@@ -121,21 +118,27 @@ annyang.addCallback('resultNoMatch', function(phrases) {
       socket.on( 'my response', function( msg ) {
         console.log( msg )
         if( typeof msg.user_name !== 'undefined' ) {
-          if( msg.user_name == 'Пользователь1' && msg.chance == -1) {
+          console.log("Received data");
+          console.log(msg);
+          if( msg.user_name.startsWith('Пользователь') && msg.chance === -1) {
                $( 'h3' ).remove()
                $( 'div.message_holder' ).append( '<div><b style="color: #000">'+msg.user_name+'</b> '+msg.message+'</div>' )
           }
+		else {
           if (msg.user_name == 'bot' && msg.chance > 1) {
                $( 'h3' ).remove()
                $( 'div.message_holder' ).append( '<div><b style="color: #000">'+msg.user_name+'</b> '+msg.answer+'</div>' )
           } else {
-            $( 'h3' ).remove()
-            $( 'div.message_holder' ).append( '<div><b style="color: #000">'+msg.user_name+'</b> '+msg.answer+'<p>' + "Возможный ответ:" + msgtokens + '</p></div>' )
+		  if (document.getElementById("username").value.startsWith("Агент")) {
+           		 $( 'h3' ).remove()
+           		 $( 'div.message_holder' ).append( '<div><b style="color: #000">'+msg.user_name+'</b> '+msg.answer+'<p>' + "Возможный ответ:" + msg.keywprds + '</p></div>' )
+		  }
           }
+		}
         }
       })
 
-      document.getElementById("username").value = Math.random() > 0.5 ? "Пользователь1" : "Moderator1";
+      document.getElementById("username").value = Math.random() > 0.5 ? "Пользователь" : "Оператор Тех. поддержки";
     </script>
 
 

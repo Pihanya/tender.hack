@@ -23,7 +23,7 @@ def messageReceived(methods=['GET', 'POST']):
 
 def get_simple_answer(message):
     print("Start working on message", message)
-    return str(script.get_simple_answer(message))
+    return script.get_simple_answer(message)
 #     response_message = ''
 #     start_time = time.clock()
 #     max_metric, max_sum = None, 0
@@ -46,14 +46,15 @@ def get_simple_answer(message):
 @socketio.on('my event')
 def handle_my_custom_event(json, methods=['GET', 'POST']):
     print('received my event: '+ str(json))
-    json['chanse'] = -1
+    json['chance'] = -1
     socketio.emit('my response', json, callback=messageReceived)
     
     answer, request, tokens, metric = get_simple_answer(json['message'])
     json['answer'] =  answer
-    json['keywords'] = tokens
+    json['keywords'] = str(tokens)
     json['user_name'] = 'bot'
-    json['metric'] = metric
+    json['chance'] = metric
+    print('sends my event: '+ str(json))
     socketio.emit('my response', json, callback=messageReceived)
 
     #json['message'] = get_simple_answer(json['message'])
