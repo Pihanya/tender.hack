@@ -52,7 +52,7 @@ def handle_my_custom_event(json, methods=['GET', 'POST']):
     answer, request, tokens, metric = get_simple_answer(json['message'])
     json['answer'] =  answer
     json['keywords'] = tokens
-    json['username'] = 'bot'
+    json['user_name'] = 'bot'
     json['metric'] = metric
     socketio.emit('my response', json, callback=messageReceived)
 

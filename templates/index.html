@@ -121,12 +121,21 @@ annyang.addCallback('resultNoMatch', function(phrases) {
       socket.on( 'my response', function( msg ) {
         console.log( msg )
         if( typeof msg.user_name !== 'undefined' ) {
-          $( 'h3' ).remove()
-          $( 'div.message_holder' ).append( '<div><b style="color: #000">'+msg.user_name+'</b> '+msg.message+'</div>' )
+          if( msg.user_name == 'Пользователь1' && msg.chance == -1) {
+               $( 'h3' ).remove()
+               $( 'div.message_holder' ).append( '<div><b style="color: #000">'+msg.user_name+'</b> '+msg.message+'</div>' )
+          }
+          if (msg.user_name == 'bot' && msg.chance > 1) {
+               $( 'h3' ).remove()
+               $( 'div.message_holder' ).append( '<div><b style="color: #000">'+msg.user_name+'</b> '+msg.answer+'</div>' )
+          } else {
+            $( 'h3' ).remove()
+            $( 'div.message_holder' ).append( '<div><b style="color: #000">'+msg.user_name+'</b> '+msg.answer+'<p>' + "Возможный ответ:" + msgtokens + '</p></div>' )
+          }
         }
       })
 
-      document.getElementById("username").value = "Пользователь1";
+      document.getElementById("username").value = Math.random() > 0.5 ? "Пользователь1" : "Moderator1";
     </script>
 
 
