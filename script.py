@@ -455,7 +455,7 @@ def get_simple_answer(request):
             
     for token in tokens:
         request = request.replace(token, token.upper())
-    return answers[idx], request, tokens, sum(metrics[0:5])
+    return answers[idx], request, tokens, max_similarity)
             
             
 # actual_question = 'В нашей заявке 2886444-19 мы ждем номер заявки на СТЕ. Как скоро обычно такие заявки рассматриваются?'
